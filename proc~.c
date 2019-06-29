@@ -333,11 +333,11 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
       int TicketP=0;
-      Tick=Count_tickets();
+      TTickets=Count_tickets();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-      winner =rand()/Tick;
+      winner =rand()/TTickets;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
@@ -357,7 +357,7 @@ scheduler(void)
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
-        int Tick;
+        int TTickets;
         int winner;
 
       swtch(&(c->scheduler), p->context);
