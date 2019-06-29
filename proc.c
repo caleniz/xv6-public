@@ -322,6 +322,8 @@ wait(void)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
+int Tick;
+int winner;
 void
 scheduler(void)
 {
@@ -357,8 +359,7 @@ scheduler(void)
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
-        int Tick;
-        int winner;
+
 
       swtch(&(c->scheduler), p->context);
       switchkvm();
