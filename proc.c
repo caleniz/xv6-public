@@ -334,6 +334,10 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
+      int Count_tickets(void)
+      {
+          return getprocs()*100;
+      }
       int TicketP=0;
       Tick=Count_tickets();
 
@@ -344,10 +348,7 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
 
-        int Count_tickets(void)
-        {
-            return getprocs()*100;
-        }
+        
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
