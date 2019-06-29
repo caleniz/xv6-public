@@ -7,6 +7,8 @@
 #include "proc.h"
 #include "spinlock.h"
 
+#include "rand.h"
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -88,6 +90,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+     p->tickets = 100;
 
   release(&ptable.lock);
 
@@ -329,19 +332,33 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
+      int TicketP=0;
+      TTickets=Count_tickets();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+      winner =rand()/TTickets;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
+        int Count_tickets(void)
+        {
+            return getprocs()*100;
+        }
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
+        TicketP+= p->tickets;
+        if(TicketP<winner)
+        {
+            continue;
+        }
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
+        int TTickets;
+        int winner;
 
       swtch(&(c->scheduler), p->context);
       switchkvm();
